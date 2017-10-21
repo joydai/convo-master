@@ -1,6 +1,6 @@
 # for gunicorn
 WORKERS=4
-TIMEOUT=60
+TIMEOUT=1000
 DEBUG=true
 
 LISTENING_IP=0.0.0.0
@@ -16,7 +16,7 @@ function start_server()
     fi
 
     gunicorn -w $WORKERS -b $LISTENING_IP:$PORT --timeout $TIMEOUT --log-file=- webapp:app &
-    #$PYTHON dispatcher.py &
+    #python dispatcher.py &
 }
 
 function stop_server

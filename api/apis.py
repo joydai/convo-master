@@ -4,22 +4,44 @@ from collections import defaultdict
 from flask import Blueprint
 import json
 from flask import jsonify
+from bson.objectid import ObjectId
+import subprocess
 
 from database import mongo
 
 api = Blueprint('api', __name__)
 log = logging.getLogger(__name__)
 
-static_file_loc = '~/voiceid/bigbang/full_.json'
+static_file_loc = '/home/joydai/voiceid/bbt/full_.json'
+static_audio_file_loc = '/home/joydai/voiceid/bbt/full.wav'
 #static_file_loc = '/Users/joydai/Downloads/full_.json'
+#static_audio_file_loc = '/Users/joydai/Downloads/full_.json'
+
+gmm_db_loc = "/home/joydai/voiceid/new_bbt_db"
 
 
-@api.route('/get_status', methods=['GET'])
-def get_status():
-    star = mongo.db.stars
-    star_id = star.insert({'name': 'tom', 'distance': 101})
-    new_star = star.find_one({'_id': star_id})
-    return 'name {} distance {}'.format(new_star['name'], new_star['distance'])
+@api.route('/submit_audio', methods=['POST'])
+def submit_audio():
+    jobs = mongo.db.jobs
+    job_id = jobs.insert({'filepath': static_audio_file_loc, 'status': 'submitted'})
+    run_analysis(job_id, static_audio_file_loc)
+    return jsonify(job_id=str(job_id))
+
+
+@api.route('/get_status/job/<job_id>', methods=['GET','POST'])
+def get_status(job_id):
+    jobs = mongo.db.jobs
+    job = jobs.find_one({'_id': ObjectId(job_id)})
+    return jsonify(status=job['status'])
+
+
+@api.route('/test', methods=['GET','POST'])
+def test():
+    job_collection = mongo.db.jobs
+    jobs = job_collection.find({'status': 'submitted'})
+    for job in jobs:
+        print(job)
+    return 'test'
 
 
 @api.route('/get_data', methods=['GET'])
@@ -54,3 +76,19 @@ def get_json_data():
         data = result_file.read().replace('\'', '"')
         json_data = json.loads(data)
     return json_data
+
+
+def run_analysis(job_id, filepath):
+    job_collection = mongo.db.jobs
+    job_collection.update_one({'_id': ObjectId(job_id)}, {"$set": {"status": "in-progress"}}, upsert=False)
+
+    try:
+        subprocess.call(["vid", "-d", gmm_db_loc, "-i", filepath, "-v", "-k", "-f", "json"])
+        #print(subprocess.check_output(["pwd"]))
+    except Exception as e:
+        print(e)
+        job_collection.update_one({'_id': ObjectId(job_id)}, {"$set": {"status": "fail"}}, upsert=False)
+        return
+
+    job_collection.update_one({'_id': ObjectId(job_id)}, {"$set": {"status": "success"}}, upsert=False)
+    return
