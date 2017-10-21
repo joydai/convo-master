@@ -29,7 +29,7 @@ function stop_server
 }
 
 if [ "$1" == "start" ]; then
-    source activate
+    # source activate
     if [ "$2" == "debug" ]; then
         start_server $DEBUG
     else
