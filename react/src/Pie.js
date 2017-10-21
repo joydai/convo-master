@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
-import createPlotlyComponent from 'react-plotlyjs';
-//See the list of possible plotly bundles at https://github.com/plotly/plotly.js/blob/master/dist/README.md#partial-bundles or roll your own
 import Plotly from 'plotly.js/dist/plotly-cartesian';
-const PlotlyComponent = createPlotlyComponent(Plotly);
 
 class Pie extends Component {
-
-  render() {
+  componentDidMount() {
     let speakingPercentageData = this.props.speakingPercentageData;
     let data = [];
     let values = [];
@@ -33,8 +29,15 @@ class Pie extends Component {
       displayModeBar: false
     };
 
+    Plotly.newPlot('speaking-percentage', data, layout, config);
+  }
+
+  render() {
+
     return (
-      <PlotlyComponent className="pie-data" data={data} layout={layout} config={config}/>
+      <div id='speaking-percentage'
+        ref={(pie) => { this.pieChart = pie; }}>
+      </div>
     );
   }
 }

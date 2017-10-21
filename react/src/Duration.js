@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
-import createPlotlyComponent from 'react-plotlyjs';
-//See the list of possible plotly bundles at https://github.com/plotly/plotly.js/blob/master/dist/README.md#partial-bundles or roll your own
 import Plotly from 'plotly.js/dist/plotly-cartesian';
-const PlotlyComponent = createPlotlyComponent(Plotly);
 
 class Duration extends Component {
-
-  render() {
+  componentDidMount() {
     let durationData = this.props.durationData;
     let data = [];
     for(let i = 0; i < durationData.length; i++) {
@@ -40,8 +36,19 @@ class Duration extends Component {
       scrollZoom: true
     };
 
+    Plotly.newPlot('speaking-duration', data, layout, config);
+    let myPlot = this.barChart;
+    myPlot.on('plotly_click', function(data){
+      console.log('clicked', data);
+      alert('You clicked ' + data.points[0].data.name);
+    });
+  }
+
+  render() {
     return (
-      <PlotlyComponent className="stacked-duration" data={data} layout={layout} config={config}/>
+      <div id="speaking-duration"
+        ref={(bar) => { this.barChart = bar; }}>
+      </div>
     );
   }
 }
