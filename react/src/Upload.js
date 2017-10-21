@@ -55,7 +55,8 @@ class Upload extends Component {
 
   applyMimeTypes(event) {
     this.setState({
-      accept: ".mp3"
+      accept: ".wav"
+
     });
   }
 
