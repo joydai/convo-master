@@ -13,11 +13,11 @@ class Duration extends Component {
       console.log('duration', durationData[i].end - durationData[i].start);
       data.push({
         x: [durationData[i].end - durationData[i].start], // value
-        y: ['Test'],
+        y: ['track'],
         text: durationData[i].name,
         name: 'Trace' + i, // category
         orientation: 'h', // horizontal
-        textposition: 'auto',
+        // textposition: 'auto',
         hoverinfo: 'none',
         type: 'bar'  
       })
@@ -25,16 +25,19 @@ class Duration extends Component {
 
     //var data = [trace1, trace2, trace3, trace4];
     let layout = {
+      title: 'Speaking Duration',
+      height: 250,
       xaxis: {title: 'Time'},
-      showlegend: false,
+      yaxis: {showticklabels: false},
+      showlegend: true,
       barmode: 'relative',
-      title: 'Relative Barmode',
       hovermode: 'closest', //  when we click, it'll tell us which trace is clicked
     };
 
     let config = {
       showLink: false,
-      displayModeBar: false
+      displayModeBar: false,
+      scrollZoom: true
     };
 
     return (
