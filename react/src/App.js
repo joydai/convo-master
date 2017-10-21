@@ -2,8 +2,17 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Duration from './Duration.js';
+import request from 'request';
 
 class App extends Component {
+  componentDidMount() {
+    request.get('http://localhost:5000/api/hello')
+    .on('response', function(response) {
+      console.log(response.statusCode) // 200
+      console.log(response.headers['content-type']) // 'image/png'
+    })
+  }
+
   render() {
     return (
       <div className="App">
