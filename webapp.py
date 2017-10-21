@@ -28,7 +28,7 @@ import os
 
 from flask import Flask, Response, render_template_string, send_from_directory
 from flask_cors import CORS
-
+from database import mongo
 from api.apis import api
 
 app = Flask(__name__)
@@ -50,7 +50,12 @@ origins = ['http://localhost:3000/*', 'http://localhost:5000/*']
 CORS(app, origins=origins, resources=['/api/*', '/static/*'], allow_headers=headers, supports_credentials=True)
 logging.getLogger('flask_cors').level = logging.DEBUG
 
+app.config['MONGO_DBNAME'] = 'convodb'
+app.config['MONGO_URI'] = 'mongodb://localhost:27017/convodb'
 
+mongo.init_app(app)
+
+abc = 'a'
 @app.route(FE_ROOT_URL)
 def ui():
     """Render the index.html page with the necessary context variables substituted in."""
