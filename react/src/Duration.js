@@ -2,23 +2,34 @@ import React, { Component } from 'react';
 import Plotly from 'plotly.js/dist/plotly-cartesian';
 
 class Duration extends Component {
-  componentDidMount() {
-    let durationData = this.props.durationData;
+  componentWillReceiveProps(nextProps) {
+    console.log('willreceive');
+
+    let durationData = nextProps.durationData;
     let data = [];
     for(let i = 0; i < durationData.length; i++) {
-      console.log('duration', durationData[i].end - durationData[i].start);
+      // console.log('duration', durationData[i].end - durationData[i].start);
       data.push({
-        x: [durationData[i].end - durationData[i].start], // value
+        x: [durationData[i].end_time - durationData[i].start_time], // value
         y: ['track'],
-        text: durationData[i].name,
-        name: 'Trace' + i, // category
+        text: durationData[i].speaker,
+        name: durationData[i].speaker, // category
         orientation: 'h', // horizontal
         // textposition: 'auto',
-        hoverinfo: 'none',
+        // hoverinfo: 'none',
         type: 'bar'  
       })
     }
 
+    this.myPlot.data = data;
+    Plotly.redraw(this.myPlot);
+  }
+
+  componentWillUpdate() {
+    console.log('willupdate');
+  }
+
+  componentDidMount() {
     //var data = [trace1, trace2, trace3, trace4];
     let layout = {
       title: 'Speaking Duration',
@@ -36,9 +47,9 @@ class Duration extends Component {
       scrollZoom: true
     };
 
-    Plotly.newPlot('speaking-duration', data, layout, config);
-    let myPlot = this.barChart;
-    myPlot.on('plotly_click', function(data){
+    Plotly.newPlot('speaking-duration', [], layout, config);
+    this.myPlot = this.barChart;
+    this.myPlot.on('plotly_click', function(data){
       console.log('clicked', data);
       alert('You clicked ' + data.points[0].data.name);
     });

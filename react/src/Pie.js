@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 import Plotly from 'plotly.js/dist/plotly-cartesian';
 
 class Pie extends Component {
-  componentDidMount() {
-    let speakingPercentageData = this.props.speakingPercentageData;
+  componentWillReceiveProps(nextProps) {
+    console.log('pie componentWillReceiveProps');
+    let speakingPercentageData = nextProps.speakingPercentageData;
     let data = [];
     let values = [];
     let labels = [];
     for(let i = 0; i < speakingPercentageData.length; i++) {
-      values.push(speakingPercentageData[i].value);
-      labels.push(speakingPercentageData[i].name);
+      values.push(speakingPercentageData[i].duration);
+      labels.push(speakingPercentageData[i].speaker);
     }
 
     data.push({
@@ -18,6 +19,11 @@ class Pie extends Component {
       type: 'pie'
     })
 
+    this.myPlot.data = data;
+    Plotly.redraw(this.myPlot);
+  }
+
+  componentDidMount() {
     //var data = [trace1, trace2, trace3, trace4];
     let layout = {
       height: 400,
@@ -29,7 +35,8 @@ class Pie extends Component {
       displayModeBar: false
     };
 
-    Plotly.newPlot('speaking-percentage', data, layout, config);
+    Plotly.newPlot('speaking-percentage', [], layout, config);
+    this.myPlot = this.pieChart;
   }
 
   render() {
