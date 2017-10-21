@@ -1,44 +1,95 @@
 import React, { Component } from 'react';
-import createPlotlyComponent from 'react-plotlyjs';
-//See the list of possible plotly bundles at https://github.com/plotly/plotly.js/blob/master/dist/README.md#partial-bundles or roll your own
 import Plotly from 'plotly.js/dist/plotly-cartesian';
-const PlotlyComponent = createPlotlyComponent(Plotly);
 
 class Duration extends Component {
+  constructor(props) {
+    super(props);
+    this.speakerColor = {};
+    this.colorIndex = 0;
+  }
 
-  render() {
-    let durationData = this.props.durationData;
+  pickColor(speaker) {
+    let colors = [
+      '#1f77b4',  // muted blue
+      '#ff7f0e',  // safety orange
+      '#2ca02c',  // cooked asparagus green
+      '#d62728',  // brick red
+      '#9467bd',  // muted purple
+      '#8c564b',  // chestnut brown
+      '#e377c2',  // raspberry yogurt pink
+      '#7f7f7f',  // middle gray
+      '#bcbd22',  // curry yellow-green
+      '#17becf'   // blue-teal
+    ];
+    if (!this.speakerColor[speaker]) {
+      this.speakerColor[speaker] = colors[this.colorIndex];
+      this.colorIndex++;
+      if (this.colorIndex > colors.length) {
+        this.colorIndex = 0;
+      }
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log('willreceive');
+    let durationData = nextProps.durationData;
     let data = [];
     for(let i = 0; i < durationData.length; i++) {
-      console.log('duration', durationData[i].end - durationData[i].start);
+      this.pickColor(durationData[i].speaker);
       data.push({
-        x: [durationData[i].end - durationData[i].start], // value
-        y: ['Test'],
-        text: durationData[i].name,
-        name: 'Trace' + i, // category
+        x: [durationData[i].end_time - durationData[i].start_time], // value
+        y: ['track'],
+        legendgroup: durationData[i].speaker,
+        text: durationData[i].speaker,
+        name: durationData[i].speaker, // category
         orientation: 'h', // horizontal
-        textposition: 'auto',
-        hoverinfo: 'none',
-        type: 'bar'  
+        marker: {color: this.speakerColor[durationData[i].speaker]},
+        // textposition: 'auto',
+        // hoverinfo: 'none',
+        type: 'bar'
       })
     }
 
+    this.myPlot.data = data;
+    Plotly.redraw(this.myPlot);
+    console.log(Plotly.d3.color());
+  }
+
+  componentWillUpdate() {
+    console.log('willupdate');
+  }
+
+  componentDidMount() {
     //var data = [trace1, trace2, trace3, trace4];
     let layout = {
+      title: 'Speaking Duration',
+      height: 250,
       xaxis: {title: 'Time'},
-      showlegend: false,
+      yaxis: {showticklabels: false},
+      showlegend: true,
       barmode: 'relative',
-      title: 'Relative Barmode',
       hovermode: 'closest', //  when we click, it'll tell us which trace is clicked
     };
 
     let config = {
       showLink: false,
-      displayModeBar: false
+      displayModeBar: false,
+      scrollZoom: true
     };
 
+    Plotly.newPlot('speaking-duration', [], layout, config);
+    this.myPlot = this.barChart;
+    this.myPlot.on('plotly_click', function(data){
+      console.log('clicked', data);
+      alert('You clicked ' + data.points[0].data.name);
+    });
+  }
+
+  render() {
     return (
-      <PlotlyComponent className="stacked-duration" data={data} layout={layout} config={config}/>
+      <div id="speaking-duration"
+        ref={(bar) => { this.barChart = bar; }}>
+      </div>
     );
   }
 }
