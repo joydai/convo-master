@@ -1,15 +1,19 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
+import homelogo from './images/home.png'
+import button from './images/startbutton.png'
+import button from './images/startbutton.png'
 import './App.css';
+import Upload from './Upload.js'
+import Loading from './Loading.js'
 
 class Home extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="app-title">Welcome to React</h1>
-        </header>
+         <img src={homelogo} className="Upload-icon"  alt="homelogo" />
+         <button><img src="./img/google.png" alt="my image" onClick={this.myfunction} /></button>
+ 
       </div>
     );
   }
