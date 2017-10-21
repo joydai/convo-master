@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Dropzone from 'react-dropzone'
 import uploadicon from './images/uploadicon.png';
+// import request from 'request';
+import request from 'superagent';
 
 class Upload extends Component {
   constructor() {
@@ -25,6 +27,20 @@ class Upload extends Component {
   }
 
   onDrop(files) {
+    console.log('GOT', files);
+    // let file = files[0];
+    // let formData = {
+    //   my_file: file
+    // };
+    // request.post({url: 'http://0d90dd7e.ngrok.io/api/submit_audio', formData}, (err, res) => {
+    // });
+    const req = request.post('http://0d90dd7e.ngrok.io/api/submit_audio');
+    files.forEach(file => {
+        req.attach(file.name, file);
+    });
+    req.end(() => {
+      console.log('DONE');
+    });
     //change to Loading page
     // do stuff with files...
     this.setState({
@@ -68,7 +84,7 @@ class Upload extends Component {
           <h2>Dropped files</h2>
           <ul>
             {
-              files.map(f => <li>{f.name} - {f.size} bytes</li>)
+              files.map(f => <li key={f.name}>{f.name} - {f.size} bytes</li>)
             }
           </ul>
 
