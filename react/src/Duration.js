@@ -5,17 +5,16 @@ import Plotly from 'plotly.js/dist/plotly-cartesian';
 const PlotlyComponent = createPlotlyComponent(Plotly);
 
 class Duration extends Component {
-  componentDidMount() {
-    console.log('hi');
-  }
 
   render() {
+    let durationData = this.props.durationData;
     let data = [];
-    for(let i = 0; i <= 4; i++) {
+    for(let i = 0; i < durationData.length; i++) {
+      console.log('duration', durationData[i].end - durationData[i].start);
       data.push({
-        x: [i], // value
+        x: [durationData[i].end - durationData[i].start], // value
         y: ['Test'],
-        text: 'Trace' + i,
+        text: durationData[i].name,
         name: 'Trace' + i, // category
         orientation: 'h', // horizontal
         textposition: 'auto',
@@ -23,8 +22,6 @@ class Duration extends Component {
         type: 'bar'  
       })
     }
-
-
 
     //var data = [trace1, trace2, trace3, trace4];
     let layout = {
@@ -37,7 +34,7 @@ class Duration extends Component {
 
     let config = {
       showLink: false,
-      displayModeBar: true
+      displayModeBar: false
     };
 
     return (
