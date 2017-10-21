@@ -20,7 +20,7 @@ static_audio_file_loc = '/home/joydai/voiceid/bbt/full.wav'
 gmm_db_loc = "/home/joydai/voiceid/new_bbt_db"
 
 
-@api.route('/submit_audio', methods=['POST'])
+@api.route('/submit_audio', methods=['GET','POST'])
 def submit_audio():
     jobs = mongo.db.jobs
     job_id = jobs.insert({'filepath': static_audio_file_loc, 'status': 'submitted'})
