@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Dashboard from './Dashboard.js';
 import Home from './Home.js';
+import Upload from './Upload.js';
+import Loading from './Loading.js';
 // import './App.css';
 // import Duration from './Duration.js';
 // import Pie from './Pie.js';
@@ -12,6 +14,8 @@ class App extends Component {
     return (
       <Switch>
         <Route exact path="/" component={Home}/>
+        <Route exact path="/upload" component={Upload}/>
+        <Route exact path="/loading" component={Loading}/>
         <Route path="/dashboard" component={Dashboard}/>
       </Switch>
     );
