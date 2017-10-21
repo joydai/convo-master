@@ -26,7 +26,7 @@ class Pie extends Component {
   componentDidMount() {
     //var data = [trace1, trace2, trace3, trace4];
     let layout = {
-      height: 400,
+      height: 500,
       width: 500
     };
 

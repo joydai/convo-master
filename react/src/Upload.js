@@ -3,6 +3,7 @@ import Dropzone from 'react-dropzone'
 import uploadicon from './images/uploadicon.png';
 // import request from 'request';
 import request from 'superagent';
+import {Redirect} from 'react-router-dom';
 
 class Upload extends Component {
   constructor() {
@@ -10,7 +11,8 @@ class Upload extends Component {
     this.state = {
       accept: '',
       files: [],
-      dropzoneActive: false
+      dropzoneActive: false,
+      shouldRedirect: false
     }
   }
 
@@ -40,6 +42,8 @@ class Upload extends Component {
     });
     req.end(() => {
       console.log('DONE');
+      this.setState({shouldRedirect: true});
+      //go to /dashboard
     });
     //change to Loading page
     // do stuff with files...
@@ -56,6 +60,9 @@ class Upload extends Component {
   }
 
   render() {
+    if(this.state.shouldRedirect) {
+      return <Redirect to='/dashboard' />; 
+    }
     const { accept, files, dropzoneActive } = this.state;
     const overlayStyle = {
       position: 'absolute',
