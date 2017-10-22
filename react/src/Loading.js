@@ -5,7 +5,7 @@ import Upload from './Upload.js'
 class Loading extends Component {
   render() {
     return (
-      <div className="Loading">
+      <div className="body">
 
           <h1 className="App-title">Loading</h1>
         

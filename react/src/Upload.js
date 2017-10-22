@@ -55,7 +55,8 @@ class Upload extends Component {
 
   applyMimeTypes(event) {
     this.setState({
-      accept: ".mp3"
+      accept: ".wav"
+
     });
   }
 
@@ -85,17 +86,16 @@ class Upload extends Component {
         onDragLeave={this.onDragLeave.bind(this)}
       >
         { dropzoneActive && <div style={overlayStyle}>Drop files...</div> }
-        <div>
-          <h2><img src={uploadicon} className="Upload-icon" height='500' width='500' alt="uploadicon" /></h2>
+        <div className="body"><center>
+          <h1><img src={uploadicon} className="Upload-icon" height='500' width='500' alt="uploadicon" /></h1>
 
-          <h2>Dropped files</h2>
           <ul>
             {
               files.map(f => <li key={f.name}>{f.name} - {f.size} bytes</li>)
             }
           </ul>
 
-        </div>
+        </center></div>
       </Dropzone>
     
 
