@@ -6,6 +6,9 @@ import json
 from flask import jsonify
 from bson.objectid import ObjectId
 import subprocess
+import threading
+import time
+
 
 from database import mongo
 
@@ -25,7 +28,8 @@ def submit_audio():
     jobs = mongo.db.jobs
     job_id = jobs.insert({'filepath': static_audio_file_loc, 'status': 'submitted'})
     run_analysis(job_id, static_audio_file_loc)
-    return jsonify(job_id=str(job_id))
+    return get_data()
+    #return jsonify(job_id=str(job_id))
 
 
 @api.route('/get_status/job/<job_id>', methods=['GET','POST'])
@@ -44,7 +48,6 @@ def test():
     return 'test'
 
 
-@api.route('/get_data', methods=['GET'])
 def get_data():
     data = get_json_data()
     total_time = data["duration"]
@@ -79,6 +82,7 @@ def get_json_data():
 
 
 def run_analysis(job_id, filepath):
+    """
     job_collection = mongo.db.jobs
     job_collection.update_one({'_id': ObjectId(job_id)}, {"$set": {"status": "in-progress"}}, upsert=False)
 
@@ -92,3 +96,21 @@ def run_analysis(job_id, filepath):
 
     job_collection.update_one({'_id': ObjectId(job_id)}, {"$set": {"status": "success"}}, upsert=False)
     return
+    """
+    time.sleep(10)
+    return
+
+
+def popenAndCall(onExit, popenArgs):
+    """
+    Runs the given args in a subprocess.Popen, and then calls the function
+    onExit when the subprocess completes.
+    onExit is a callable object, and popenArgs is a list/tuple of args that
+    would give to subprocess.Popen.
+    """
+    def runInThread(onExit, popenArgs):
+        proc = subprocess.Popen(*popenArgs)
+        proc.wait()
+        onExit()
+        return
+
