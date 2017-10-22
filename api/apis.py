@@ -6,7 +6,7 @@ import json
 from flask import jsonify
 from bson.objectid import ObjectId
 import subprocess
-import threading
+import multiprocessing
 import time
 
 
@@ -27,8 +27,8 @@ gmm_db_loc = "/home/joydai/voiceid/new_bbt_db"
 def submit_audio():
     jobs = mongo.db.jobs
     job_id = jobs.insert({'filepath': static_audio_file_loc, 'status': 'submitted'})
-    run_analysis(job_id, static_audio_file_loc)
-    return get_data()
+    #run_analysis(job_id, static_audio_file_loc)
+    return ''
     #return jsonify(job_id=str(job_id))
 
 
@@ -48,6 +48,7 @@ def test():
     return 'test'
 
 
+@api.route('/get_data', methods=['GET'])
 def get_data():
     data = get_json_data()
     total_time = data["duration"]
@@ -97,20 +98,14 @@ def run_analysis(job_id, filepath):
     job_collection.update_one({'_id': ObjectId(job_id)}, {"$set": {"status": "success"}}, upsert=False)
     return
     """
-    time.sleep(10)
+
+def callback(job_id):
+    job_collection = mongo.db.jobs
+    job_collection.update_one({'_id': ObjectId(job_id)}, {"$set": {"status": "success"}}, upsert=False)
+
+def run_processing(job_id, filepath):
+    pool = multiprocessing.Pool(1)
+    rval = pool.map_async(run_analysis, ([job_id, filepath]), callback=callback)
+    pool.close()
     return
-
-
-def popenAndCall(onExit, popenArgs):
-    """
-    Runs the given args in a subprocess.Popen, and then calls the function
-    onExit when the subprocess completes.
-    onExit is a callable object, and popenArgs is a list/tuple of args that
-    would give to subprocess.Popen.
-    """
-    def runInThread(onExit, popenArgs):
-        proc = subprocess.Popen(*popenArgs)
-        proc.wait()
-        onExit()
-        return
 
