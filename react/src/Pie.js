@@ -26,8 +26,14 @@ class Pie extends Component {
   componentDidMount() {
     //var data = [trace1, trace2, trace3, trace4];
     let layout = {
-      height: 500,
-      width: 500
+      height: 550,
+      width: 550,
+      font: {
+        size: 16,
+        color: '#fff'
+      },
+      paper_bgcolor: 'rgba(36,36,36,0)',
+      plot_bgcolor: 'rgba(36,36,36,0)'
     };
 
     let config = {

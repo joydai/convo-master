@@ -62,11 +62,17 @@ class Duration extends Component {
   componentDidMount() {
     //var data = [trace1, trace2, trace3, trace4];
     let layout = {
+      font: {
+        size: 16,
+        color: '#fff'
+      },
+      paper_bgcolor: 'rgba(36,36,36,0)',
+      plot_bgcolor: 'rgba(36,36,36,0)',
       title: 'Speaking Duration',
-      height: 250,
-      xaxis: {title: 'Time'},
+      height: 300,
+      xaxis: {title: 'Time (s)'},
       yaxis: {showticklabels: false},
-      showlegend: true,
+      showlegend: false,
       barmode: 'relative',
       hovermode: 'closest', //  when we click, it'll tell us which trace is clicked
     };

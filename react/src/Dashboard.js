@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import request from 'request';
 import Duration from './Duration.js';
 import Pie from './Pie.js';
+import './Chart.css';
 
 class Dashboard extends Component {
   constructor(props) {

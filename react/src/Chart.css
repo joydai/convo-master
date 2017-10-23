@@ -1,0 +1,7 @@
+/* body { */
+/*   background-color: rgb(255, 255, 255) !important; */
+/* } */
+
+#speaking-percentage .svg-container {
+  transform: translateX(108%)
+}

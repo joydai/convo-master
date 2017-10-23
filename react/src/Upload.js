@@ -4,6 +4,7 @@ import uploadicon from './images/uploadicon.png';
 // import request from 'request';
 import request from 'superagent';
 import {Redirect} from 'react-router-dom';
+import Spinner from 'react-spinner';
 
 class Upload extends Component {
   constructor() {
@@ -12,7 +13,8 @@ class Upload extends Component {
       accept: '',
       files: [],
       dropzoneActive: false,
-      shouldRedirect: false
+      shouldRedirect: false,
+      isUploading: false
     }
   }
 
@@ -38,11 +40,12 @@ class Upload extends Component {
     // });
     const req = request.post('http://0d90dd7e.ngrok.io/api/submit_audio');
     files.forEach(file => {
+      this.setState({isUploading: true});
         req.attach(file.name, file);
     });
     req.end(() => {
       console.log('DONE');
-      this.setState({shouldRedirect: true});
+      this.setState({shouldRedirect: true, isUploading: false});
       //go to /dashboard
     });
     //change to Loading page
@@ -88,12 +91,7 @@ class Upload extends Component {
         { dropzoneActive && <div style={overlayStyle}>Drop files...</div> }
         <div className="body"><center>
           <h1><img src={uploadicon} className="Upload-icon" height='500' width='500' alt="uploadicon" /></h1>
-
-          <ul>
-            {
-              files.map(f => <li key={f.name}>{f.name} - {f.size} bytes</li>)
-            }
-          </ul>
+        {this.state.isUploading && <Spinner />}
 
         </center></div>
       </Dropzone>
