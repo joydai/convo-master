@@ -27,7 +27,7 @@ gmm_db_loc = "/home/joydai/voiceid/new_bbt_db"
 def submit_audio():
     jobs = mongo.db.jobs
     job_id = jobs.insert({'filepath': static_audio_file_loc, 'status': 'submitted'})
-    #run_analysis(job_id, static_audio_file_loc)
+    run_processing(job_id, static_audio_file_loc)
     return ''
     #return jsonify(job_id=str(job_id))
 
@@ -61,7 +61,7 @@ def get_data():
             speaker = specs["speaker"]
 
         else:
-            speaker = min(specs["speakers"], key=specs["speakers"].get)
+            speaker = max(specs["speakers"], key=specs["speakers"].get)
 
         speakers[speaker] += specs["endTime"] - specs["startTime"]
         segments.append({"speaker": speaker,
@@ -83,7 +83,6 @@ def get_json_data():
 
 
 def run_analysis(job_id, filepath):
-    """
     job_collection = mongo.db.jobs
     job_collection.update_one({'_id': ObjectId(job_id)}, {"$set": {"status": "in-progress"}}, upsert=False)
 
@@ -91,17 +90,18 @@ def run_analysis(job_id, filepath):
         subprocess.call(["vid", "-d", gmm_db_loc, "-i", filepath, "-v", "-k", "-f", "json"])
         #print(subprocess.check_output(["pwd"]))
     except Exception as e:
-        print(e)
+        pass
         job_collection.update_one({'_id': ObjectId(job_id)}, {"$set": {"status": "fail"}}, upsert=False)
         return
 
     job_collection.update_one({'_id': ObjectId(job_id)}, {"$set": {"status": "success"}}, upsert=False)
-    return
-    """
+    return job_id
+
 
 def callback(job_id):
     job_collection = mongo.db.jobs
     job_collection.update_one({'_id': ObjectId(job_id)}, {"$set": {"status": "success"}}, upsert=False)
+
 
 def run_processing(job_id, filepath):
     pool = multiprocessing.Pool(1)
