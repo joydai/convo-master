@@ -1,4 +1,9 @@
-# convo-master
+# happy-meeting
+
+![Home Page](/screenshots/home.png?raw=true "Home Page")
+![Drag and Drop Uploader](/screenshots/dragndrop.png?raw=true "Drag and Drop
+Uploader")
+![Dashboard](/screenshots/dashboard.png?raw=true "Dashboard")
 
 ## Setup Guide:
   * You should have these installed:
@@ -12,3 +17,8 @@
 
 ## Stop server:
     * run ./runserver.sh stop
+
+## UI:
+  * cd react/
+  * npm run start
+

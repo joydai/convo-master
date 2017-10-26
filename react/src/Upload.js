@@ -67,7 +67,7 @@ class Upload extends Component {
     if(this.state.shouldRedirect) {
       return <Redirect to='/dashboard' />; 
     }
-    const { accept, files, dropzoneActive } = this.state;
+    const { accept, dropzoneActive } = this.state;
     const overlayStyle = {
       position: 'absolute',
       top: 0,
